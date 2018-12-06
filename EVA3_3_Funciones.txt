@@ -1,0 +1,109 @@
+Funciones
+CREATE DEFINER=`root`@`localhost` FUNCTION `generar_rfc`(nombre text, ap_pat text, ap_mat text, fecha date) RETURNS tinytext CHARSET utf8mb4
+BEGIN
+
+#extraer las primeras dos letras del ap_pat
+#primer letra del ap mat
+#primer letra del nombre
+#VALC971009
+
+declare letras_pat text;
+declare letras_mat text;
+
+declare letras_nom text;
+
+declare annio int;
+
+declare mes int;
+
+declare dia int;
+
+declare mes_texto text;
+
+declare dia_texto text;
+
+declare clave text;
+
+set letras_pat = left(ap_pat, 2);
+
+if
+length(ap_mat) > 0 then
+set letras_mat = left(ap_mat, 1);
+else
+
+set letras_mat = 'X';
+
+end if;
+
+set letras_nom = left(nombre, 1);
+
+set annio = year(fecha);
+
+set mes = month(fecha);
+
+set dia = dayofmonth(fecha);
+
+if
+mes < 10 then
+
+set mes_texto = concat('0', mes);
+
+else
+
+set mes_texto = concat(mes);
+
+end if;
+
+if
+dia < 10 then
+
+set dia_texto = concat('0', dia);
+else
+
+set dia_texto = concat(dia);
+
+end if;
+
+set clave = upper(concat(letras_pat,letras_mat,letras_nom,annio,mes_texto,dia_texto));
+
+
+RETURN clave;
+END
+
+MySQL Shell 8.0.12
+
+Copyright (c) 2016, 2018, Oracle and/or its affiliates. All rights reserved.
+
+Oracle is a registered trademark of Oracle Corporation and/or its
+affiliates. Other names may be trademarks of their respective
+owners.
+
+Type '\help' or '\?' for help; '\quit' to exit.
+
+
+ MySQL  JS > \sql
+Switching to SQL mode... Commands end with ;
+
+ MySQL  SQL > \connect -c root@localhost
+The -c option is deprecated, please use --mysql or -mc instead
+Creating a Classic session to 'root@localhost'
+Please provide the password for 'root@localhost': ****
+Save password for 'root@localhost:3306'? [Y]es/[N]o/Ne[v]er (default No): y
+Fetching schema names for autocompletion... Press ^C to stop.
+Your MySQL connection id is 10
+Server version: 8.0.12 MySQL Community Server - GPL
+No default schema selected; type \use <schema> to set one.
+
+ MySQL  localhost:3306 ssl  SQL > \use evaluacion_3
+Default schema set to `evaluacion_3`.
+Fetching table and column names from `evaluacion_3` for auto-completion... Press ^C to stop.
+
+ MySQL  localhost:3306 ssl  evaluacion_3  SQL > select generar_rfc('Cinthia','Vazquez','Lerma','1997-10-09');
++-------------------------------------------------------+
+| generar_rfc('Cinthia','Vazquez','Lerma','1997-10-09') |
++-------------------------------------------------------+
+| VALC19971009                                          |
++-------------------------------------------------------+
+1 row in set (0.1307 sec)
+
+ MySQL  localhost:3306 ssl  evaluacion_3  SQL >
